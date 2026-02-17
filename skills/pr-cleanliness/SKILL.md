@@ -53,9 +53,7 @@ To analyze a PR for cleanliness issues:
 
 ## Severity Levels
 
-- **Error**: Must fix before merging (debug artifacts, credentials, test-only code)
-- **Warning**: Should fix (formatting noise, scope creep, mixed concerns)
-- **Info**: Consider fixing (size suggestions, minor improvements)
+Use `references/severity-matrix.md` as the canonical severity policy. Do not redefine severity mappings in commands or agent prompts.
 
 ## Base Branch Detection
 
@@ -72,3 +70,4 @@ To determine the base branch for comparison:
 For a comprehensive catalog of anti-patterns with language-specific examples and detection regex patterns, consult:
 
 - **`references/anti-patterns.md`** -- Detailed anti-pattern catalog with regex patterns for detection, organized by language and category
+- **`references/severity-matrix.md`** -- Canonical severity mapping used by all PR cleanliness commands and agents

@@ -20,6 +20,7 @@ Read all plugin files to understand current capabilities:
 - `.claude-plugin/plugin.json` -- manifest
 - `skills/pr-cleanliness/SKILL.md` -- core skill
 - `skills/pr-cleanliness/references/anti-patterns.md` -- detection patterns
+- `skills/pr-cleanliness/references/severity-matrix.md` -- canonical severity policy
 - `commands/*.md` -- all commands
 - `agents/*.md` -- all agents
 
@@ -31,7 +32,7 @@ For each area, identify what is missing or could be improved:
 - Are there common anti-patterns not covered in `references/anti-patterns.md`?
 - Are regex patterns accurate and comprehensive?
 - Are there language-specific patterns missing for commonly used languages?
-- Are severity levels appropriate?
+- Are severity levels appropriate and consistent with `references/severity-matrix.md`?
 
 **Command Workflows**:
 - Are command instructions clear and complete?
