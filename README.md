@@ -62,13 +62,6 @@ The `/clean-pr:improve` command is for contributors working on this plugin. It r
 
 The improve command is read-only -- it never modifies files, just reports what could be better.
 
-### What to contribute
-
-The most impactful improvements are usually:
-
-- **New anti-patterns** in `skills/pr-cleanliness/references/anti-patterns.md` -- add regex patterns for languages or patterns not yet covered
-- **Better heuristics** in command instructions -- edge cases the commands don't handle well
-- **Agent improvements** in `agents/pattern-scanner.md` -- sharpen the system prompt based on real scanning results
 
 ## Plugin structure
 
