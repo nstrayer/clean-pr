@@ -9,7 +9,7 @@ A Claude Code plugin that analyzes and cleans up PRs to be minimal, focused, and
 Clone the repo and load the plugin with `--plugin-dir`:
 
 ```bash
-git clone <repo-url> ~/dev/clean-pr-plugin
+git clone https://github.com/nstrayer/clean-pr.git ~/dev/clean-pr-plugin
 claude --plugin-dir ~/dev/clean-pr-plugin
 ```
 
