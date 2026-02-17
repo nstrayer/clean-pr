@@ -1,9 +1,15 @@
 {
   "name": "clean-pr",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Analyze and clean up PRs to be minimal, focused, and easy for humans to review",
   "author": {
     "name": "Nick Strayer"
   },
-  "keywords": ["pr", "review", "cleanup", "git", "code-review"]
+  "keywords": [
+    "pr",
+    "review",
+    "cleanup",
+    "git",
+    "code-review"
+  ]
 }
