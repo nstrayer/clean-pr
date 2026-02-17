@@ -135,7 +135,13 @@ After changes are applied:
 3. Create a single commit with a descriptive conventional-commit message (e.g., `feat: add Swift anti-pattern detection`, `fix: correct regex for Python debug patterns`)
 4. If no changes were applied, do not create a commit.
 
-### 8. Summary Report
+### 8. Bump Version
+
+After committing, run `${CLAUDE_PLUGIN_ROOT}/update-version.sh` to bump the patch version. This is required for other Claude Code sessions to pick up the changes (the plugin cache is keyed by version).
+
+Tell the user the new version number and remind them to restart or run `/plugin update clean-pr` in other sessions.
+
+### 9. Summary Report
 
 Output a summary:
 
@@ -150,6 +156,8 @@ Output a summary:
 
 ## Remaining Suggestions
 - [Ideas not acted on this run]
+
+**Version bumped to X.Y.Z** -- restart Claude Code or run `/plugin update clean-pr` in other sessions to pick up these changes.
 ```
 
 ### Important Guidelines
