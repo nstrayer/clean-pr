@@ -69,6 +69,8 @@ I found N proposed cleanups. The following are non-trivial and need confirmation
 Apply which? (e.g., "1,3", "all", or "none")
 ```
 
+Parse the selection strictly: accept comma-separated positive integers within the valid range, the keyword `all`, or the keyword `none`. On invalid input (out-of-range numbers, duplicates, unrecognized tokens, mixed forms like `all,2`), re-prompt with a clear error message instead of proceeding.
+
 ### 6. Apply Confirmed Edits
 
 After confirmation:

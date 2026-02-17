@@ -109,9 +109,13 @@ I have N proposed improvements. The following are non-trivial and need confirmat
 Apply which? (e.g., "1,2", "all", or "none")
 ```
 
-Trivial changes can be applied after a brief preview, but still require a final confirmation gate (see step 6).
+Parse the selection strictly: accept comma-separated positive integers within the valid range, the keyword `all`, or the keyword `none`. On invalid input (out-of-range numbers, duplicates, unrecognized tokens, mixed forms like `all,2`), re-prompt with a clear error message instead of proceeding.
+
+Trivial changes are included automatically in the final confirmation gate (step 6) but do not require individual numbered approval. Non-trivial changes must be approved by number or `all` before reaching the final gate. If the user selects `none` for non-trivial changes, only trivial changes proceed to the final gate.
 
 ### 6. Apply Confirmed Changes
+
+Before applying, check `git status --porcelain`. If there are uncommitted changes outside the plugin directory, warn the user that committing may include unrelated work and ask whether to proceed or stash first.
 
 After confirmation:
 
@@ -126,7 +130,7 @@ After confirmation:
 
 After changes are applied:
 
-1. Stage specific modified files: `git add` only the files that were changed
+1. Stage specific modified files: `git add` only the files that were changed. If the working tree had pre-existing changes in the same files, use `git add -p` to stage only the hunks from this session.
 2. Ask the user to confirm the commit before creating it.
 3. Create a single commit with a descriptive conventional-commit message (e.g., `feat: add Swift anti-pattern detection`, `fix: correct regex for Python debug patterns`)
 4. If no changes were applied, do not create a commit.
