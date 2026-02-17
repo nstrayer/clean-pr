@@ -7,6 +7,7 @@ Used by:
 - `commands/check.md`
 - `commands/improve.md`
 - `agents/pattern-scanner.md`
+- `agents/codebase-analyzer.md`
 
 ## Matrix
 
@@ -22,6 +23,9 @@ Used by:
 | Mixed concerns in one PR | Warning | Multiple independent purposes bundled together |
 | PR size above thresholds (>400 lines changed or >15 files) | Warning | Suggest split or decomposition plan |
 | Debug artifacts in test files | Info | Unless credentials/secrets are involved |
+| Duplicated function/class replicating existing codebase functionality | Warning | New definition closely mirrors an existing implementation |
+| Reimplemented utility when existing helper or library is available | Warning | Custom implementation of functionality already available in the project |
+| Pattern divergence from established codebase conventions | Info | New code uses a different pattern than the codebase majority (>70% threshold) |
 | Minor cleanliness suggestions | Info | Optional improvements that do not block merge |
 
 ## Interpretation Rules
@@ -30,3 +34,4 @@ Used by:
 2. Debug findings in test files are downgraded to Info, except credentials/secrets which remain Error.
 3. Legitimate operational logging (for example `console.error`, `console.warn`, structured logging) is not a debug artifact by default.
 4. Only evaluate added or modified lines in the PR diff.
+5. Cross-codebase findings (duplicates, reimplemented utilities, pattern divergence) are never Error severity.

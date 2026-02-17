@@ -36,7 +36,7 @@ git log <base>...HEAD --oneline
 
 If the diff is very large (more than 2000 lines), process it file-by-file using `git diff <base>...HEAD -- <file>` for each changed file.
 
-### 3. Analyze for Issues
+### 3. Scan for Anti-Patterns
 
 Use the pattern-scanner agent via the Task tool to scan the diff for anti-patterns. Pass the diff content and ask it to categorize findings.
 
@@ -46,7 +46,19 @@ Also perform high-level analysis:
 - **Size assessment**: Count total lines changed (additions + deletions) and files modified. Compare against thresholds (>400 lines or >15 files = warning).
 - **Severity assignment**: Apply severities from `${CLAUDE_PLUGIN_ROOT}/skills/pr-cleanliness/references/severity-matrix.md` without adding command-specific overrides.
 
-### 4. Produce Report
+### 4. Cross-Codebase Analysis
+
+Skip this step for greenfield projects (fewer than 5 non-test, non-config source files in the repository).
+
+Use the codebase-analyzer agent via the Task tool to compare new code against the existing codebase. Pass the diff content and ask it to check for:
+
+- **Duplicate functions**: New definitions that closely mirror existing codebase functionality
+- **Reimplemented utilities**: Custom implementations of functionality already available via project helpers or libraries
+- **Pattern divergence**: New code that uses different conventions than the established codebase majority
+
+Cross-codebase findings are informational -- they require human judgment and are not auto-fixable by the `fix` command.
+
+### 5. Produce Report
 
 Output a structured markdown report with this format:
 
@@ -81,6 +93,28 @@ Output a structured markdown report with this format:
 ### Info (N)
 
 [Suggestions to consider]
+
+## Cross-Codebase Findings
+
+### Potential Duplicates (N)
+
+| New Definition | Existing Match | Overlap |
+|----------------|----------------|---------|
+| `src/utils/retry.ts:15` `retryWithBackoff()` | `src/lib/http.ts:82` `retryRequest()` | Both implement exponential backoff retry |
+
+### Reimplemented Utilities (N)
+
+| New Utility | Existing Alternative | Details |
+|-------------|---------------------|---------|
+| `src/helpers/date.ts:5` `formatRelativeDate()` | `date-fns` `formatDistanceToNow()` | Already in package.json |
+
+### Pattern Divergence (N)
+
+| File | Pattern | Codebase Convention | New Code |
+|------|---------|-------------------|----------|
+| `src/api/users.ts:20-45` | Error handling | async/await + try/catch (8/10 files) | Callback-style |
+
+_Cross-codebase findings require human judgment and are not auto-fixable._
 
 ## Recommendations
 

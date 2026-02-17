@@ -39,6 +39,16 @@ Changes that go beyond the PR's purpose, even if individually reasonable -- rena
 
 PRs that are too large to review effectively. General thresholds: >400 lines changed or >15 files modified warrants attention. >800 lines or >30 files strongly suggests splitting. See `references/anti-patterns.md` for size guidelines and contextual adjustments.
 
+### 6. Codebase Integration
+
+New code that overlaps with or diverges from the existing codebase. These issues can only be detected by comparing new code against what already exists in the project.
+
+- **Duplicate functions**: New function or class definitions that closely mirror existing implementations in the codebase (similar name AND similar logic)
+- **Reimplemented utilities**: Custom implementations of functionality already available via the project's utility modules or imported libraries
+- **Pattern divergence**: New code that uses different conventions (error handling, async style, naming) than the established majority (>70% threshold) in the same module
+
+These findings require human judgment -- they are never auto-fixable and are never Error severity.
+
 ## Detection Approach
 
 To analyze a PR for cleanliness issues:
@@ -49,7 +59,8 @@ To analyze a PR for cleanliness issues:
 4. **Scan for artifacts**: Search the diff for debug patterns, formatting noise, and commented-out code
 5. **Assess scope**: Determine whether each file's changes serve the PR's stated purpose
 6. **Evaluate size**: Check total diff size and file count against thresholds
-7. **Report findings**: Group issues by category with file:line references and severity
+7. **Check codebase integration**: Compare new definitions against existing codebase for duplicates, reimplemented utilities, and pattern divergence
+8. **Report findings**: Group issues by category with file:line references and severity
 
 ## Severity Levels
 
@@ -71,3 +82,7 @@ For a comprehensive catalog of anti-patterns with language-specific examples and
 
 - **`references/anti-patterns.md`** -- Detailed anti-pattern catalog with regex patterns for detection, organized by language and category
 - **`references/severity-matrix.md`** -- Canonical severity mapping used by all PR cleanliness commands and agents
+
+### Agents
+
+- **`agents/codebase-analyzer.md`** -- Cross-codebase analysis agent for detecting duplicates, reimplemented utilities, and pattern divergence

@@ -74,6 +74,7 @@ clean-pr-plugin/
 │   ├── split.md                                 # /clean-pr:split
 │   └── improve.md                               # /clean-pr:improve
 ├── agents/
+│   ├── codebase-analyzer.md                     # Cross-codebase analysis agent
 │   └── pattern-scanner.md                       # Diff scanning agent
 └── skills/
     └── pr-cleanliness/
