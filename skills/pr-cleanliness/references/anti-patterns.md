@@ -2,13 +2,15 @@
 
 Comprehensive catalog of patterns to detect when scanning PR diffs for cleanliness issues. Organized by category with regex patterns for detection.
 
+**Convention**: All regex patterns include the `^\+` prefix for matching added lines in unified diff output. Apply these patterns against raw diff output to only flag new/modified code.
+
 ## Debug Artifacts
 
 ### Console/Print Statements
 
 **JavaScript/TypeScript:**
 ```
-console\.(log|debug|warn|error|info|trace|dir|table|time|timeEnd)\(
+^\+.*console\.(log|debug|warn|error|info|trace|dir|table|time|timeEnd)\(
 ```
 
 **Python:**
@@ -78,7 +80,7 @@ Detect multi-line commented-out code blocks (not documentation comments):
 ^\+\s*/\*[\s\S]*?(if|for|while|return)\b[\s\S]*?\*/
 ```
 
-**Heuristic**: A comment containing code keywords (if, for, return, function, class) on 3+ consecutive lines is likely commented-out code rather than documentation.
+**Heuristic**: A comment containing code keywords (if, for, return, function, class) on 3+ consecutive lines is likely commented-out code rather than documentation. To detect this, apply the per-line regex patterns above and then check for 3+ consecutive matching lines in the diff output.
 
 ### Temporary/Test Values
 

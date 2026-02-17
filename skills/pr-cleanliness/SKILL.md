@@ -1,6 +1,6 @@
 ---
 name: PR Cleanliness
-description: This skill should be used when the user asks to "clean up a PR", "check PR quality", "review PR for unnecessary changes", "simplify a pull request", "make PR easier to review", "reduce PR noise", "minimize diff", or discusses PR hygiene, clean diffs, or making PRs easier for humans to review.
+description: This skill should be used when the user asks to "clean up a PR", "check PR quality", "review PR for unnecessary changes", "simplify a pull request", "make PR easier to review", "reduce PR noise", "minimize diff", "remove debug statements from my PR", "prepare PR for review", "my PR is too big", or discusses PR hygiene, clean diffs, PR size, or making PRs easier for humans to review.
 version: 0.1.0
 ---
 
@@ -10,7 +10,7 @@ PR cleanliness is about ensuring every change in a pull request serves the PR's 
 
 ## Why PR Cleanliness Matters
 
-Large, noisy PRs slow teams down. Reviewers lose focus scanning through formatting changes, debug leftovers, and unrelated refactors. Important bugs hide in the noise. Review fatigue leads to rubber-stamping. Clean PRs get reviewed faster, catch more bugs, and merge sooner.
+Noisy PRs cause review fatigue, hide bugs, and slow teams down -- clean PRs get reviewed faster and merge sooner.
 
 ## Issue Categories
 
@@ -25,49 +25,19 @@ Changes serving multiple unrelated purposes bundled in one PR. A bug fix mixed w
 
 ### 2. Debug Artifacts
 
-Code added during development that should not ship. These are the most straightforward issues to detect and fix.
-
-**Common patterns:**
-- `console.log`, `console.debug`, `console.warn` (non-production)
-- `print()`, `println()`, `fmt.Println()` debug statements
-- `debugger`, `binding.pry`, `import pdb; pdb.set_trace()`
-- `TODO`, `FIXME`, `HACK`, `XXX` comments added in this PR
-- Commented-out code blocks (not documentation comments)
-- Temporary test values or hardcoded credentials
+Code added during development that should not ship (e.g., `console.log`, `debugger`, `print()`, TODO/FIXME comments, commented-out code blocks). See `references/anti-patterns.md` for the full catalog with language-specific regex patterns.
 
 ### 3. Formatting Noise
 
-Changes that alter appearance without changing behavior. These inflate the diff and obscure real changes.
-
-**Common patterns:**
-- Whitespace-only line changes (trailing spaces, tabs vs spaces)
-- Import reordering without adding/removing imports
-- Line ending changes (CRLF vs LF)
-- Brace style reformatting on unchanged code
-- Auto-formatter running on entire files when only a few lines changed
-- Adding/removing blank lines in unchanged code sections
+Changes that alter appearance without changing behavior -- whitespace-only changes, import reordering, blank line additions in untouched code. These inflate the diff and obscure real changes. See `references/anti-patterns.md` for detection approaches.
 
 ### 4. Scope Creep
 
-Changes that go beyond the PR's purpose, even if individually reasonable. These should be separate PRs.
-
-**Common patterns:**
-- Renaming variables or functions in code not otherwise modified
-- Adding type annotations to untouched code
-- Refactoring adjacent code "while we're here"
-- Upgrading dependencies unrelated to the feature
-- Adding error handling to code paths not touched by the PR
-- Documentation updates for unrelated features
+Changes that go beyond the PR's purpose, even if individually reasonable -- renames in untouched files, type annotations added to existing code, drive-by refactors. These should be separate PRs. See `references/anti-patterns.md` for detection signals.
 
 ### 5. PR Size
 
-PRs that are too large to review effectively, even if all changes are related. The threshold depends on context, but general guidelines apply.
-
-**Size signals:**
-- More than ~400 lines changed (additions + deletions)
-- More than ~15 files modified
-- Changes spanning more than 3 distinct directories/modules
-- Multiple commits that could stand alone as separate PRs
+PRs that are too large to review effectively. General thresholds: >400 lines changed or >15 files modified warrants attention. >800 lines or >30 files strongly suggests splitting. See `references/anti-patterns.md` for size guidelines and contextual adjustments.
 
 ## Detection Approach
 
