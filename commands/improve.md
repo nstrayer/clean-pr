@@ -22,12 +22,12 @@ Analyze the clean-pr plugin's own source files and apply improvements to its det
 
 Read all plugin files to understand current capabilities:
 
-- `.claude-plugin/plugin.json` -- manifest
-- `skills/pr-cleanliness/SKILL.md` -- core skill
-- `skills/pr-cleanliness/references/anti-patterns.md` -- detection patterns
-- `skills/pr-cleanliness/references/severity-matrix.md` -- canonical severity policy
-- `commands/*.md` -- all commands
-- `agents/*.md` -- all agents
+- `${CLAUDE_PLUGIN_ROOT}/.claude-plugin/plugin.json` -- manifest
+- `${CLAUDE_PLUGIN_ROOT}/skills/pr-cleanliness/SKILL.md` -- core skill
+- `${CLAUDE_PLUGIN_ROOT}/skills/pr-cleanliness/references/anti-patterns.md` -- detection patterns
+- `${CLAUDE_PLUGIN_ROOT}/skills/pr-cleanliness/references/severity-matrix.md` -- canonical severity policy
+- `${CLAUDE_PLUGIN_ROOT}/commands/*.md` -- all commands
+- `${CLAUDE_PLUGIN_ROOT}/agents/*.md` -- all agents
 
 ### 2. Parse User Input
 
@@ -44,10 +44,10 @@ If no argument was provided, skip to automated analysis.
 For each area, identify what is missing or could be improved:
 
 **Anti-Pattern Detection**:
-- Are there common anti-patterns not covered in `references/anti-patterns.md`?
+- Are there common anti-patterns not covered in `${CLAUDE_PLUGIN_ROOT}/skills/pr-cleanliness/references/anti-patterns.md`?
 - Are regex patterns accurate and comprehensive?
 - Are there language-specific patterns missing for commonly used languages?
-- Are severity levels appropriate and consistent with `skills/pr-cleanliness/references/severity-matrix.md`?
+- Are severity levels appropriate and consistent with `${CLAUDE_PLUGIN_ROOT}/skills/pr-cleanliness/references/severity-matrix.md`?
 
 **Command Workflows**:
 - Are command instructions clear and complete?
@@ -155,5 +155,5 @@ Output a summary:
 - Stay within the plugin's PR cleanliness scope -- suggestions should be about PR cleanliness, not general code quality.
 - If nothing needs improving and no user input was provided, say so and exit.
 - When adding anti-patterns, follow the existing catalog format (regex, language labels, examples).
-- Respect `skills/pr-cleanliness/references/severity-matrix.md` as the source of truth for severity levels.
+- Respect `${CLAUDE_PLUGIN_ROOT}/skills/pr-cleanliness/references/severity-matrix.md` as the source of truth for severity levels.
 - Create a single commit for all changes, not one per improvement.

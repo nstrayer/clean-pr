@@ -44,7 +44,7 @@ Also perform high-level analysis:
 
 - **Mixed concerns**: Look at the set of changed files and commit messages. Do they serve a single purpose? Are there commits that could be independent PRs?
 - **Size assessment**: Count total lines changed (additions + deletions) and files modified. Compare against thresholds (>400 lines or >15 files = warning).
-- **Severity assignment**: Apply severities from `skills/pr-cleanliness/references/severity-matrix.md` without adding command-specific overrides.
+- **Severity assignment**: Apply severities from `${CLAUDE_PLUGIN_ROOT}/skills/pr-cleanliness/references/severity-matrix.md` without adding command-specific overrides.
 
 ### 4. Produce Report
 
@@ -90,7 +90,7 @@ Output a structured markdown report with this format:
 
 ### Severity Rules
 
-Use `skills/pr-cleanliness/references/severity-matrix.md` as the single source of truth.
+Use `${CLAUDE_PLUGIN_ROOT}/skills/pr-cleanliness/references/severity-matrix.md` as the single source of truth.
 
 ### Important Guidelines
 

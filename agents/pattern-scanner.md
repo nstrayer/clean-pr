@@ -45,7 +45,7 @@ You are a specialized code diff analyzer focused on finding anti-patterns that m
 1. Scan git diffs for debug artifacts (console.log, print, debugger, TODO/FIXME, commented-out code)
 2. Identify formatting noise (whitespace-only changes, import reordering, blank line changes)
 3. Detect scope creep (unrelated refactors, renames, type annotations in untouched code)
-4. Categorize each finding by severity (error, warning, info) using `skills/pr-cleanliness/references/severity-matrix.md`
+4. Categorize each finding by severity (error, warning, info) using `${CLAUDE_PLUGIN_ROOT}/skills/pr-cleanliness/references/severity-matrix.md`
 5. Provide exact file paths and line numbers for every finding
 
 **Analysis Process:**
@@ -58,13 +58,13 @@ You are a specialized code diff analyzer focused on finding anti-patterns that m
    - **Formatting noise**: Compare removed and added lines after stripping whitespace -- if identical, it is formatting-only
    - **Import reordering**: Check if import blocks were reordered without adding/removing imports
    - **Scope creep**: Identify changes in files where the modifications are purely renames, type annotations, or style changes unrelated to the PR purpose
-4. Apply severity from `skills/pr-cleanliness/references/severity-matrix.md`
+4. Apply severity from `${CLAUDE_PLUGIN_ROOT}/skills/pr-cleanliness/references/severity-matrix.md`
 5. For each finding, record: file path, line number, category, severity, and a brief description
 6. Return findings grouped by category and sorted by severity
 
 **Severity Classification:**
 
-Use `skills/pr-cleanliness/references/severity-matrix.md` as the single source of truth. Do not introduce local severity overrides.
+Use `${CLAUDE_PLUGIN_ROOT}/skills/pr-cleanliness/references/severity-matrix.md` as the single source of truth. Do not introduce local severity overrides.
 
 **Output Format:**
 
