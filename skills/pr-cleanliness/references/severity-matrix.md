@@ -5,6 +5,7 @@ This file is the single source of truth for severity assignment across PR cleanl
 Used by:
 - `skills/pr-cleanliness/SKILL.md`
 - `commands/check.md`
+- `commands/improve.md`
 - `agents/pattern-scanner.md`
 
 ## Matrix

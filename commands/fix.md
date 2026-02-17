@@ -66,17 +66,19 @@ I found N proposed cleanups. The following are non-trivial and need confirmation
 2. src/api.ts: Revert formatting-only hunk in file with functional changes (lines 42-50)
 3. src/config.ts: Revert unrelated rename (lines 88-94)
 
-Apply these patch hunks? [yes/no]
+Apply which? (e.g., "1,3", "all", or "none")
 ```
 
 ### 6. Apply Confirmed Edits
 
 After confirmation:
 
-1. Apply only approved hunks.
+1. Apply only the hunks the user approved (by number or "all").
 2. Prefer hunk-level edits using Edit/Write operations.
 3. Do not use whole-file reverts by default.
-4. Only use whole-file restore when:
+4. If the working tree was dirty at the start, never use whole-file restore -- use hunk-level edits only.
+5. Only use whole-file restore when:
+   - The working tree is clean
    - Every hunk in the file is verified formatting-only
    - The full file patch preview has been shown
    - The user explicitly confirms reverting the entire file

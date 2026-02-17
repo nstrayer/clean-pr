@@ -47,7 +47,7 @@ For each area, identify what is missing or could be improved:
 - Are there common anti-patterns not covered in `references/anti-patterns.md`?
 - Are regex patterns accurate and comprehensive?
 - Are there language-specific patterns missing for commonly used languages?
-- Are severity levels appropriate and consistent with `references/severity-matrix.md`?
+- Are severity levels appropriate and consistent with `skills/pr-cleanliness/references/severity-matrix.md`?
 
 **Command Workflows**:
 - Are command instructions clear and complete?
@@ -106,28 +106,30 @@ I have N proposed improvements. The following are non-trivial and need confirmat
 1. anti-patterns.md: Add new Swift detection section (lines 120+)
 2. SKILL.md: Rewrite progressive-disclosure section (lines 45-62)
 
-Apply these changes? [yes/no]
+Apply which? (e.g., "1,2", "all", or "none")
 ```
 
-Trivial changes can be applied without individual confirmation, but still show them in the preview.
+Trivial changes can be applied after a brief preview, but still require a final confirmation gate (see step 6).
 
 ### 6. Apply Confirmed Changes
 
 After confirmation:
 
-1. Apply only approved changes.
+1. Apply only the changes the user approved (by number or "all").
 2. Use Edit for targeted modifications to existing content.
 3. Use Write only when creating new sections or files.
 4. Process changes file-by-file.
 5. Only modify files within the plugin directory.
+6. Before writing any files, show a final summary of what will be changed and ask for a go-ahead. Do not auto-apply without this gate, even for trivial changes.
 
 ### 7. Commit
 
 After changes are applied:
 
 1. Stage specific modified files: `git add` only the files that were changed
-2. Create a single commit with a descriptive conventional-commit message (e.g., `feat: add Swift anti-pattern detection`, `fix: correct regex for Python debug patterns`)
-3. If no changes were applied, do not create a commit.
+2. Ask the user to confirm the commit before creating it.
+3. Create a single commit with a descriptive conventional-commit message (e.g., `feat: add Swift anti-pattern detection`, `fix: correct regex for Python debug patterns`)
+4. If no changes were applied, do not create a commit.
 
 ### 8. Summary Report
 
@@ -153,5 +155,5 @@ Output a summary:
 - Stay within the plugin's PR cleanliness scope -- suggestions should be about PR cleanliness, not general code quality.
 - If nothing needs improving and no user input was provided, say so and exit.
 - When adding anti-patterns, follow the existing catalog format (regex, language labels, examples).
-- Respect `severity-matrix.md` as the source of truth for severity levels.
+- Respect `skills/pr-cleanliness/references/severity-matrix.md` as the source of truth for severity levels.
 - Create a single commit for all changes, not one per improvement.
