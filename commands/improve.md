@@ -1,15 +1,20 @@
 ---
 name: improve
-description: Suggest improvements to the clean-pr plugin itself by analyzing its detection patterns and capabilities
+description: Analyze and apply improvements to the clean-pr plugin itself, guided by automated analysis and optional user input
 allowed-tools:
+  - Bash
   - Read
+  - Write
+  - Edit
   - Grep
   - Glob
+  - Task
+argument-hint: "[what to improve]"
 ---
 
 # Plugin Self-Improvement
 
-Analyze the clean-pr plugin's own source files and suggest improvements to its detection patterns, commands, and overall capabilities. This command is for plugin maintainers who have the plugin installed locally and want to iterate on it.
+Analyze the clean-pr plugin's own source files and apply improvements to its detection patterns, commands, and overall capabilities. Combines automated gap analysis with optional user-directed improvements.
 
 ## Workflow
 
@@ -24,7 +29,17 @@ Read all plugin files to understand current capabilities:
 - `commands/*.md` -- all commands
 - `agents/*.md` -- all agents
 
-### 2. Analyze Coverage Gaps
+### 2. Parse User Input
+
+If an argument was provided, treat it as the user's description of what to improve. Examples:
+
+- `"add Swift patterns"` -- add Swift-specific anti-patterns to the detection catalog
+- `"improve the split command's dependency analysis"` -- refine the split command workflow
+- `"add detection for Python f-string debugging"` -- add a specific anti-pattern
+
+If no argument was provided, skip to automated analysis.
+
+### 3. Analyze Coverage Gaps
 
 For each area, identify what is missing or could be improved:
 
@@ -50,35 +65,93 @@ For each area, identify what is missing or could be improved:
 - Are reference files comprehensive?
 - Is the progressive disclosure balance right?
 
-### 3. Suggest Improvements
+### 4. Build Unified Improvement Plan
 
-Output a structured list of suggestions:
+Combine user input and automated findings into a prioritized plan.
+
+If the user provided input, list those suggestions first:
 
 ```markdown
-# Plugin Improvement Suggestions
+# Improvement Plan
 
-## High Priority
+## From Your Input
+1. [User-requested improvement with specific file references]
+
+## From Automated Analysis
+### High Priority
 1. [Suggestion with specific file and line references]
-2. [Suggestion]
 
-## Medium Priority
+### Medium Priority
 1. [Suggestion]
-2. [Suggestion]
 
-## Ideas for New Features
-1. [Feature idea with rationale]
-2. [Feature idea]
+### Low Priority / Ideas
+1. [Suggestion]
+```
 
-## Anti-Pattern Gaps
-1. [Missing pattern with suggested regex]
-2. [Missing pattern]
+If no user input was provided, only show the automated analysis sections.
+
+### 5. Propose Changes
+
+For each planned improvement, show a before/after preview of the change.
+
+Classify each change as:
+
+- **Trivial**: Single-line, mechanical change (e.g., fixing a typo in a regex, adding a language label)
+- **Non-trivial**: New sections, rewritten content, structural changes, new anti-patterns with complex regexes
+
+For non-trivial changes, ask for explicit confirmation before applying:
+```
+I have N proposed improvements. The following are non-trivial and need confirmation:
+
+1. anti-patterns.md: Add new Swift detection section (lines 120+)
+2. SKILL.md: Rewrite progressive-disclosure section (lines 45-62)
+
+Apply these changes? [yes/no]
+```
+
+Trivial changes can be applied without individual confirmation, but still show them in the preview.
+
+### 6. Apply Confirmed Changes
+
+After confirmation:
+
+1. Apply only approved changes.
+2. Use Edit for targeted modifications to existing content.
+3. Use Write only when creating new sections or files.
+4. Process changes file-by-file.
+5. Only modify files within the plugin directory.
+
+### 7. Commit
+
+After changes are applied:
+
+1. Stage specific modified files: `git add` only the files that were changed
+2. Create a single commit with a descriptive conventional-commit message (e.g., `feat: add Swift anti-pattern detection`, `fix: correct regex for Python debug patterns`)
+3. If no changes were applied, do not create a commit.
+
+### 8. Summary Report
+
+Output a summary:
+
+```markdown
+# Plugin Improvement Complete
+
+## Changes Applied
+- [List of changes made with file references]
+
+## Changes Skipped
+- [Any changes the user declined]
+
+## Remaining Suggestions
+- [Ideas not acted on this run]
 ```
 
 ### Important Guidelines
 
-- This is a read-only analysis command. Do not modify any files.
-- Be specific: reference exact files and line numbers when suggesting changes.
-- Prioritize suggestions by impact on review quality.
-- Focus on practical improvements, not theoretical ones.
-- Consider the plugin's scope -- suggestions should be about PR cleanliness, not general code quality.
-- If the plugin is in good shape, say so. Do not invent suggestions.
+- Only modify files within the plugin directory.
+- Always preview before applying; require confirmation for non-trivial changes.
+- Stay within the plugin's PR cleanliness scope -- suggestions should be about PR cleanliness, not general code quality.
+- If nothing needs improving and no user input was provided, say so and exit.
+- When adding anti-patterns, follow the existing catalog format (regex, language labels, examples).
+- Respect `severity-matrix.md` as the source of truth for severity levels.
+- Create a single commit for all changes, not one per improvement.
