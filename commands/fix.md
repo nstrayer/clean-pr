@@ -1,6 +1,6 @@
 ---
 name: fix
-description: Auto-clean unnecessary changes from the current branch to simplify the PR
+description: Clean unnecessary changes from the current branch with patch preview and confirmation for non-trivial edits
 allowed-tools:
   - Bash
   - Read
@@ -12,9 +12,9 @@ allowed-tools:
 argument-hint: "[base-branch]"
 ---
 
-# PR Auto-Clean
+# PR Assisted Clean
 
-Automatically remove unnecessary changes from the current branch to make the PR cleaner and easier to review. Use moderate aggressiveness: remove obvious noise and revert formatting-only changes, but ask before structural changes.
+Clean unnecessary changes from the current branch to make the PR cleaner and easier to review. Default to safe mode: suggest patch previews first, and require explicit confirmation for any non-trivial edit before applying.
 
 ## Workflow
 
@@ -34,55 +34,64 @@ Run `git status --porcelain`. If there are uncommitted changes, warn the user an
 
 Run `git diff <base>...HEAD` and use the pattern-scanner agent to identify fixable issues.
 
-### 4. Fix Issues by Category
+### 4. Build a Cleanup Plan
 
-#### Category A: Debug Artifacts (Auto-fix)
+Analyze findings and group proposed edits by category:
 
-Remove without asking:
-- `console.log()`, `console.debug()` statements (not `console.error()` or `console.warn()` used for real error handling)
-- `debugger` statements
-- `print()` / `pprint()` debug statements (in non-Python-script contexts)
-- `binding.pry`, `byebug`
-- Commented-out code blocks (3+ consecutive lines of commented code keywords)
+- **Debug artifacts**: `console.log()`, `console.debug()`, `debugger`, temporary `print()` / `pprint()`, `binding.pry`, `byebug`, commented-out code blocks
+- **Formatting noise**: whitespace-only changes, import reordering-only, blank-line-only changes
+- **Structural scope cleanup**: TODO/FIXME removal, drive-by refactor reverts, unrelated type annotations/renames
 
-**Method**: Use the Edit tool to remove the offending lines. If removing a line leaves an empty block, clean up the block.
+Classify each proposed edit as:
 
-#### Category B: Formatting Noise (Auto-fix)
+- **Trivial edit**: Single-line, mechanical cleanup with very low semantic risk (for example, removing a standalone `debugger` line).
+- **Non-trivial edit**: Multi-line change, mixed hunk, or any edit that could affect behavior or intent.
 
-Revert without asking:
-- Whitespace-only changes in files that have no other meaningful changes
-- Import reordering where no imports were added or removed
-- Blank line additions/removals in otherwise untouched code
+Treat the following as non-trivial by default:
 
-**Method**: For files where ALL changes are formatting-only, use `git checkout <base> -- <file>` to fully revert. For files with mixed real and formatting changes, use the Edit tool to revert only the formatting hunks.
+- Removing commented-out code blocks
+- Reverting any hunk in a file that also contains real functional changes
+- Removing TODO/FIXME comments
+- Reverting drive-by refactors or scope-creep changes
 
-#### Category C: Structural Changes (Ask First)
+### 5. Propose Patch (Default Behavior)
 
-Present to the user and ask for confirmation before acting:
-- Removing TODO/FIXME comments (user may want to keep as reminders)
-- Reverting drive-by refactors (renames, type annotations in untouched code)
-- Removing new error handling in code not related to the PR's purpose
+Before applying edits, present grouped patch previews with file paths, line references, and rationale.
 
-Present each group of structural changes as a batch:
+For every non-trivial edit group, ask for explicit confirmation:
 ```
-I found N structural changes that may be out of scope:
+I found N proposed cleanups. The following are non-trivial and need confirmation:
 
-1. src/utils.ts: Variable rename `x` -> `count` (lines 15-20) -- not related to this PR
-2. src/api.ts: Added type annotations (lines 42-50) -- file not otherwise modified
-3. src/config.ts: Added null check (line 88) -- unrelated to PR purpose
+1. src/utils.ts: Remove commented-out code block (lines 15-23)
+2. src/api.ts: Revert formatting-only hunk in file with functional changes (lines 42-50)
+3. src/config.ts: Revert unrelated rename (lines 88-94)
 
-Remove these changes? [Describe what will happen]
+Apply these patch hunks? [yes/no]
 ```
 
-### 5. Commit Cleanup
+### 6. Apply Confirmed Edits
 
-After all fixes are applied:
+After confirmation:
+
+1. Apply only approved hunks.
+2. Prefer hunk-level edits using Edit/Write operations.
+3. Do not use whole-file reverts by default.
+4. Only use whole-file restore when:
+   - Every hunk in the file is verified formatting-only
+   - The full file patch preview has been shown
+   - The user explicitly confirms reverting the entire file
+
+### 7. Commit Cleanup
+
+After confirmed fixes are applied:
 
 1. Stage all changes: `git add` the specific modified files
 2. Create a commit with message: `chore: clean up PR noise`
 3. Show the user a summary of what was cleaned
 
-### 6. Summary Report
+If no changes are applied, do not create a commit.
+
+### 8. Summary Report
 
 Output a summary:
 
@@ -106,7 +115,7 @@ Output a summary:
 
 - Never remove `console.error()` or `console.warn()` that are part of real error handling
 - Never revert changes in files that have both formatting and real changes without being precise about which hunks to revert
-- Always show the user what will be changed before making structural fixes
+- Always suggest a patch preview before applying any non-trivial edit
 - If the working tree is dirty, do not proceed without user confirmation
 - Create a single cleanup commit, not one per fix
 - If nothing needs fixing, say so and exit
