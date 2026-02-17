@@ -60,7 +60,7 @@ Before applying edits, present grouped patch previews with file paths, line refe
 
 For every non-trivial edit group, ask for explicit confirmation using the `AskUserQuestion` tool with `multiSelect: true`. Present each non-trivial finding as an option with a descriptive label and file/line details in the description. Include an "All" option and a "None" option.
 
-If there are more than 4 non-trivial findings (exceeding the option limit), present them in text first, then use `AskUserQuestion` with broader grouping options (e.g., by category) or with "All", "None", and category-level choices. The user can select "Other" to specify individual items by number.
+If there are more than 4 non-trivial findings, batch them across multiple `AskUserQuestion` calls (up to 4 findings per question). Each batch should still include an "All in this group" and "None in this group" option for convenience.
 
 ### 6. Apply Confirmed Edits
 
