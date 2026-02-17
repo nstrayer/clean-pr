@@ -6,7 +6,7 @@
   "plugins": [
     {
       "name": "clean-pr",
-      "source": ".",
+      "source": "./",
       "description": "Analyze and clean up PRs to be minimal, focused, and easy for humans to review"
     }
   ]
