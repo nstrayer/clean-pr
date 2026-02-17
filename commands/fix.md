@@ -58,18 +58,9 @@ Treat the following as non-trivial by default:
 
 Before applying edits, present grouped patch previews with file paths, line references, and rationale.
 
-For every non-trivial edit group, ask for explicit confirmation:
-```
-I found N proposed cleanups. The following are non-trivial and need confirmation:
+For every non-trivial edit group, ask for explicit confirmation using the `AskUserQuestion` tool with `multiSelect: true`. Present each non-trivial finding as an option with a descriptive label and file/line details in the description. Include an "All" option and a "None" option.
 
-1. src/utils.ts: Remove commented-out code block (lines 15-23)
-2. src/api.ts: Revert formatting-only hunk in file with functional changes (lines 42-50)
-3. src/config.ts: Revert unrelated rename (lines 88-94)
-
-Apply which? (e.g., "1,3", "all", or "none")
-```
-
-Parse the selection strictly: accept comma-separated positive integers within the valid range, the keyword `all`, or the keyword `none`. On invalid input (out-of-range numbers, duplicates, unrecognized tokens, mixed forms like `all,2`), re-prompt with a clear error message instead of proceeding.
+If there are more than 4 non-trivial findings (exceeding the option limit), present them in text first, then use `AskUserQuestion` with broader grouping options (e.g., by category) or with "All", "None", and category-level choices. The user can select "Other" to specify individual items by number.
 
 ### 6. Apply Confirmed Edits
 
