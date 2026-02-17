@@ -15,13 +15,17 @@ The plugin loads automatically every session after this -- no flags or config ne
 
 ## Contributing
 
-Clone the repo and add your local checkout as a marketplace:
+Clone the repo anywhere on your machine and add your local checkout as a plugin source:
 
 ```bash
+# Clone to any directory you prefer -- the path here is just an example
 git clone https://github.com/nstrayer/clean-pr.git ~/dev/clean-pr-plugin
 ```
 
+Then in Claude Code, register the local checkout and install:
+
 ```
+# Replace the path with wherever you cloned the repo
 /plugin marketplace add ~/dev/clean-pr-plugin
 /plugin install clean-pr
 ```
