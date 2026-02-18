@@ -4,12 +4,10 @@ A Claude Code plugin that analyzes and cleans up PRs to be minimal, focused, and
 
 ## Install
 
-Add the plugin marketplace and install:
-
-```
-/plugin marketplace add nstrayer/clean-pr
-/plugin install clean-pr
-```
+1. In Claude Code, open the plugin menu by typing `/plugin`
+2. Select **Marketplaces** and then **Add marketplace**
+3. Enter `nstrayer/clean-pr` as the path
+4. When prompted, confirm to install the `clean-pr` plugin
 
 The plugin loads automatically every session after this -- no flags or config needed.
 
@@ -22,13 +20,12 @@ Clone the repo anywhere on your machine and add your local checkout as a plugin 
 git clone https://github.com/nstrayer/clean-pr.git ~/dev/clean-pr-plugin
 ```
 
-Then in Claude Code, register the local checkout and install:
+Then in Claude Code, register your local checkout as a marketplace:
 
-```
-# Replace the path with wherever you cloned the repo
-/plugin marketplace add ~/dev/clean-pr-plugin
-/plugin install clean-pr
-```
+1. Type `/plugin` to open the plugin menu
+2. Select **Marketplaces** and then **Add marketplace**
+3. Enter the path to your local clone (e.g., `~/dev/clean-pr-plugin`)
+4. When prompted, confirm to install the `clean-pr` plugin
 
 This points at your local files, so edits are reflected immediately. When you're happy with your changes, push to GitHub and open a PR.
 
