@@ -58,17 +58,15 @@ Start with `/clean-pr:check`. It analyzes your branch's diff and produces a repo
 
 Based on the findings, check will suggest:
 
-- **`/clean-pr:fix`** -- if there are auto-fixable issues (debug artifacts, formatting noise, scope creep). Fix reads the check report from the conversation, so it must be run after check.
+- **`/clean-pr:fix`** -- if there are issues to address (debug artifacts, formatting noise, scope creep, duplicates, pattern divergence). Fix reads the check report from the conversation, so it must be run after check. Cross-codebase fixes always require your confirmation before applying.
 - **`/clean-pr:split`** -- if the PR has mixed concerns or exceeds size thresholds. Produces a decomposition plan (no git changes).
-- **Manual review** -- for cross-codebase findings (duplicates, reimplemented utilities, pattern divergence) that require human judgment.
 
 ```mermaid
 flowchart TD
     A["/clean-pr:check"] --> B{Findings?}
     B -->|Clean| C["No action needed"]
-    B -->|Auto-fixable issues| D["/clean-pr:fix"]
+    B -->|Issues to fix| D["/clean-pr:fix"]
     B -->|Mixed concerns / too large| E["/clean-pr:split"]
-    B -->|Cross-codebase findings| F["Manual review"]
 ```
 
 ## Commands

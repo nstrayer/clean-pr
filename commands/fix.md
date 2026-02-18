@@ -29,9 +29,9 @@ Then stop.
 From the check report, extract:
 
 - **Base branch**: From the `**Branch**: feature/xyz -> main` header line.
-- **Auto-fixable issues**: All items from the Errors and Warnings tables that fall into these categories: debug artifacts, formatting noise, scope creep. Ignore cross-codebase findings (duplicates, reimplemented utilities, pattern divergence) -- those require human judgment.
+- **All issues**: Items from the Errors and Warnings tables (debug artifacts, formatting noise, scope creep) and Cross-Codebase Findings (duplicates, reimplemented utilities, pattern divergence).
 
-If there are no auto-fixable issues in the check report, tell the user there is nothing to fix and stop.
+If there are no issues in the check report, tell the user there is nothing to fix and stop.
 
 ### 3. Ensure Clean Working Tree
 
@@ -43,11 +43,14 @@ Run `git diff <base>...HEAD` to get the actual diff content. This is needed to l
 
 ### 5. Build a Cleanup Plan
 
-Using the auto-fixable issues from the check report, group proposed edits by category:
+Using the issues from the check report, group proposed edits by category:
 
 - **Debug artifacts**: `console.log()`, `console.debug()`, `debugger`, temporary `print()` / `pprint()`, `binding.pry`, `byebug`, commented-out code blocks
 - **Formatting noise**: whitespace-only changes, import reordering-only, blank-line-only changes
 - **Structural scope cleanup**: TODO/FIXME removal, drive-by refactor reverts, unrelated type annotations/renames
+- **Duplicate functions**: Replace new definitions with imports of existing codebase equivalents
+- **Reimplemented utilities**: Replace custom code with existing project helpers or library calls
+- **Pattern divergence**: Rewrite to match established codebase conventions
 
 Classify each proposed edit as:
 
@@ -60,6 +63,7 @@ Treat the following as non-trivial by default:
 - Reverting any hunk in a file that also contains real functional changes
 - Removing TODO/FIXME comments
 - Reverting drive-by refactors or scope-creep changes
+- All cross-codebase fixes (duplicates, reimplemented utilities, pattern divergence)
 
 ### 6. Propose Patch
 

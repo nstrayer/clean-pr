@@ -56,7 +56,7 @@ Use the codebase-analyzer agent via the Task tool to compare new code against th
 - **Reimplemented utilities**: Custom implementations of functionality already available via project helpers or libraries
 - **Pattern divergence**: New code that uses different conventions than the established codebase majority
 
-Cross-codebase findings are informational -- they require human judgment and are not auto-fixable by the `fix` command.
+Cross-codebase findings are always classified as non-trivial by the `fix` command and require explicit user confirmation before changes are applied.
 
 ### 5. Produce Report
 
@@ -114,24 +114,22 @@ Output a structured markdown report with this format:
 |------|---------|-------------------|----------|
 | `src/api/users.ts:20-45` | Error handling | async/await + try/catch (8/10 files) | Callback-style |
 
-_Cross-codebase findings require human judgment and are not auto-fixable._
+_Cross-codebase findings are non-trivial -- `/clean-pr:fix` will preview proposed changes and require your confirmation before applying._
 
 ## Next Steps
 
 [Include only the items that apply based on findings above. If the PR is clean, say "This PR looks clean -- no action needed." and stop here.]
 
-- **Run `/clean-pr:fix`** -- [N] auto-fixable issues found (debug artifacts, formatting noise, scope creep). This will preview proposed cleanups and apply only what you confirm.
+- **Run `/clean-pr:fix`** -- [N] issues found. This will preview proposed cleanups and apply only what you confirm.
 - **Run `/clean-pr:split`** -- This PR has mixed concerns / exceeds size thresholds. Get a decomposition plan with landing order.
-- **Manual review needed** -- [N] cross-codebase findings require human judgment and cannot be auto-fixed.
 ```
 
 ### Next Steps Rules
 
 Include each suggestion only when the corresponding findings exist:
 
-- **`/clean-pr:fix`**: Include when there are any Errors or Warnings categorized as debug artifacts, formatting noise, or scope creep. Replace `[N]` with the actual count of auto-fixable issues.
+- **`/clean-pr:fix`**: Include when there are any issues in the Errors/Warnings tables or any Cross-Codebase Findings. Replace `[N]` with the total count.
 - **`/clean-pr:split`**: Include when there are Warnings for mixed concerns or PR size (>400 lines or >15 files).
-- **Manual review needed**: Include when there are any Cross-Codebase Findings (duplicates, reimplemented utilities, pattern divergence). Replace `[N]` with the count.
 - If none of these apply, the PR is clean -- output only the "no action needed" message.
 
 ### Severity Rules
