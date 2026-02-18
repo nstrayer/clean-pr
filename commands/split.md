@@ -18,28 +18,30 @@ Analyze the current branch's changes and recommend how to decompose them into sm
 
 ### 1. Determine Base Branch
 
-If an argument is provided, use it as the base branch. Otherwise:
+If an argument is provided, use it as the base branch name. Otherwise:
 
 1. Try `gh pr view --json baseRefName -q .baseRefName 2>/dev/null`
 2. Fall back to `main` or `master` via `git rev-parse --verify`
 3. If neither works, ask the user
 
+Then resolve the base branch to its remote tracking ref following the **Base Branch Detection** procedure in `${CLAUDE_PLUGIN_ROOT}/skills/pr-cleanliness/SKILL.md`. Use the resolved `<ref>` (typically `origin/<base>`) for all subsequent git commands.
+
 ### 2. Gather Information
 
-Run these commands:
+Run these commands, using `<ref>` (the resolved ref from step 1):
 
 ```bash
 # List of commits on this branch
-git log <base>...HEAD --oneline --no-merges
+git log <ref>...HEAD --oneline --no-merges
 
 # Changed files with stats
-git diff <base>...HEAD --stat
+git diff <ref>...HEAD --stat
 
 # Full diff for analysis
-git diff <base>...HEAD --name-status
+git diff <ref>...HEAD --name-status
 
 # Commit details to understand groupings
-git log <base>...HEAD --format="%h %s" --no-merges
+git log <ref>...HEAD --format="%h %s" --no-merges
 ```
 
 ### 3. Analyze Change Groupings

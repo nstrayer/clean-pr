@@ -18,23 +18,25 @@ Analyze the current branch's diff against the base branch and produce a structur
 
 ### 1. Determine Base Branch
 
-If an argument is provided, use it as the base branch. Otherwise:
+If an argument is provided, use it as the base branch name. Otherwise:
 
 1. Try `gh pr view --json baseRefName -q .baseRefName 2>/dev/null` to get the PR's base branch
 2. Fall back to detecting the default branch: check if `main` or `master` exists via `git rev-parse --verify`
 3. If neither works, ask the user
 
+Then resolve the base branch to its remote tracking ref following the **Base Branch Detection** procedure in `${CLAUDE_PLUGIN_ROOT}/skills/pr-cleanliness/SKILL.md`. Use the resolved `<ref>` (typically `origin/<base>`) for all subsequent git commands.
+
 ### 2. Get the Diff
 
-Run these commands to gather PR information:
+Run these commands to gather PR information, using `<ref>` (the resolved ref from step 1):
 
 ```bash
-git diff <base>...HEAD --stat
-git diff <base>...HEAD
-git log <base>...HEAD --oneline
+git diff <ref>...HEAD --stat
+git diff <ref>...HEAD
+git log <ref>...HEAD --oneline
 ```
 
-If the diff is very large (more than 2000 lines), process it file-by-file using `git diff <base>...HEAD -- <file>` for each changed file.
+If the diff is very large (more than 2000 lines), process it file-by-file using `git diff <ref>...HEAD -- <file>` for each changed file.
 
 ### 3. Scan for Anti-Patterns
 
@@ -65,7 +67,7 @@ Output a structured markdown report with this format:
 ```markdown
 # PR Cleanliness Report
 
-**Branch**: `feature/xyz` -> `main`
+**Branch**: `feature/xyz` -> `origin/main`
 **Files changed**: N | **Lines changed**: +X / -Y
 **Overall**: [CLEAN | NEEDS ATTENTION | NEEDS WORK]
 

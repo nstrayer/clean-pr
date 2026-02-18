@@ -28,7 +28,7 @@ Then stop.
 
 From the check report, extract:
 
-- **Base branch**: From the `**Branch**: feature/xyz -> main` header line.
+- **Base ref**: From the `**Branch**: feature/xyz -> origin/main` header line. This may be `origin/<base>` (preferred) or just `<base>` (from older reports or local fallback). Use whichever ref the report contains.
 - **All issues**: Items from the Errors and Warnings tables (debug artifacts, formatting noise, scope creep) and Cross-Codebase Findings (duplicates, reimplemented utilities, pattern divergence).
 
 If there are no issues in the check report, tell the user there is nothing to fix and stop.
@@ -39,7 +39,9 @@ Run `git status --porcelain`. If there are uncommitted changes, warn the user an
 
 ### 4. Get the Diff
 
-Run `git diff <base>...HEAD` to get the actual diff content. This is needed to locate the exact code to edit.
+If the base ref from the report starts with `origin/`, run `git fetch origin <base-name> 2>/dev/null` first (where `<base-name>` is the part after `origin/`) to ensure the remote ref is current.
+
+Run `git diff <ref>...HEAD` using the ref extracted from the report to get the actual diff content. This is needed to locate the exact code to edit.
 
 ### 5. Build a Cleanup Plan
 

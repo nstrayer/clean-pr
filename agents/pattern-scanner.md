@@ -50,7 +50,7 @@ You are a specialized code diff analyzer focused on finding anti-patterns that m
 
 **Analysis Process:**
 
-1. Obtain the diff using `git diff <base>...HEAD` (or process file-by-file if the diff is large)
+1. Obtain the diff using the resolved ref provided by the calling command (e.g. `git diff <ref>...HEAD`), or process file-by-file if the diff is large
 2. For each file in the diff, examine every added line (lines starting with `+`)
 3. Apply pattern matching for each anti-pattern category:
    - **Debug artifacts**: Search for console.log, print(), debugger, binding.pry, pdb, TODO/FIXME/HACK/XXX in added lines

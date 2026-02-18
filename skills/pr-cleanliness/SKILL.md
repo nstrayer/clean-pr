@@ -54,7 +54,7 @@ These findings require human judgment -- they are never auto-fixable and are nev
 To analyze a PR for cleanliness issues:
 
 1. **Establish context**: Determine the PR's purpose from branch name, commit messages, and (if available) PR description
-2. **Get the diff**: Compare current branch against base branch using `git diff <base>...HEAD`
+2. **Get the diff**: Compare current branch against base branch using `git diff origin/<base>...HEAD`
 3. **Catalog changes**: List all modified files with change type (added/modified/deleted) and line counts
 4. **Scan for artifacts**: Search the diff for debug patterns, formatting noise, and commented-out code
 5. **Assess scope**: Determine whether each file's changes serve the PR's stated purpose
@@ -70,9 +70,10 @@ Use `references/severity-matrix.md` as the canonical severity policy. Do not red
 
 To determine the base branch for comparison:
 
-1. Check if a PR exists for the current branch via `gh pr view --json baseRefName`
-2. Fall back to common defaults: `main`, `master`, `develop`
-3. Use `git merge-base` to find the actual divergence point
+1. **Resolve name**: Check if a PR exists for the current branch via `gh pr view --json baseRefName`. Fall back to common defaults: `main`, `master`, `develop`.
+2. **Fetch and resolve to remote ref**: Run `git fetch origin <base> 2>/dev/null` and use `origin/<base>` for all subsequent diff/log commands. This ensures the comparison matches what GitHub sees, even when the local `<base>` branch is stale. If the argument already starts with `origin/`, use it as-is without redundant fetch.
+3. **Fall back with warning**: If the fetch fails (no network, no remote, `origin/<base>` does not exist), fall back to the local `<base>` ref and warn: "Could not fetch remote ref -- comparing against local `<base>` which may be stale."
+4. Use `git merge-base` to find the actual divergence point
 
 ## Additional Resources
 
