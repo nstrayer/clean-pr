@@ -62,6 +62,19 @@ Based on the findings, check will suggest:
 - **`/clean-pr:split`** -- if the PR has mixed concerns or exceeds size thresholds. Produces a decomposition plan (no git changes).
 - **Manual review** -- for cross-codebase findings (duplicates, reimplemented utilities, pattern divergence) that require human judgment.
 
+```mermaid
+flowchart TD
+    A["/clean-pr:check"] --> B{Findings?}
+    B -->|Clean| C["No action needed"]
+    B -->|Auto-fixable issues| D["/clean-pr:fix"]
+    B -->|Mixed concerns / too large| E["/clean-pr:split"]
+    B -->|Cross-codebase findings| F["Manual review"]
+    D --> G["Preview patches"]
+    G --> H["Confirm & apply"]
+    H --> I["chore: clean up PR noise"]
+    E --> J["Decomposition plan"]
+```
+
 ## Commands
 
 | Command | Purpose |
