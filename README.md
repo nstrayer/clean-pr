@@ -69,10 +69,6 @@ flowchart TD
     B -->|Auto-fixable issues| D["/clean-pr:fix"]
     B -->|Mixed concerns / too large| E["/clean-pr:split"]
     B -->|Cross-codebase findings| F["Manual review"]
-    D --> G["Preview patches"]
-    G --> H["Confirm & apply"]
-    H --> I["chore: clean up PR noise"]
-    E --> J["Decomposition plan"]
 ```
 
 ## Commands
