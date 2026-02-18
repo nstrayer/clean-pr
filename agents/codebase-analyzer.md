@@ -56,11 +56,17 @@ If fewer than 3 new definitions are found, stop and return early with a clean re
 
 ### Phase 2: Duplicate/Similar Function Detection (Severity: Warning)
 
-For each new function or class definition:
+For each new function or class definition, first summarize in one sentence what it does (without using its name). Then search for existing equivalents using these strategies in order. Stop for a given function once you find a strong match.
 
-1. Use `Grep` to search the codebase (excluding the file being added/modified) for functions with similar names or signatures
-2. When candidates are found, use `Read` to compare the function bodies
-3. Only report when there is **meaningful overlap**: similar name AND similar logic/behavior, not just name collisions
+**Strategy A -- Name search**: Grep for functions with similar names or common synonyms. For example, for `retryWithBackoff`, also search for `retry`, `attempt`, `withRetry`, `executeWithRetry`.
+
+**Strategy B -- API call fingerprinting**: Identify the key function calls and operations inside the new function (e.g., `setTimeout`, `clearTimeout`, `Promise`, `fetch`, `JSON.parse`). Grep for other functions in the codebase that call the same combination. Functions using the same building blocks often implement the same behavior, regardless of naming.
+
+**Strategy C -- Utility directory sweep**: Use Glob to find utility/helper directories (`**/utils/**`, `**/helpers/**`, `**/lib/**`, `**/common/**`, `**/shared/**`). For each directory found, Read the index/barrel file or list files with Glob, then Read promising candidates to check for functional overlap.
+
+**Strategy D -- Import-based search**: Parse what the new function imports or calls. Grep for other files that import the same modules/functions. If multiple files import the same dependency to do similar work, one may already solve the problem.
+
+For each candidate found by any strategy, Read the function body and compare. Only report when there is **meaningful behavioral overlap** -- similar logic and purpose, not just name or API call collisions.
 
 **Report format per finding:**
 - New definition: file path, line number, function name
