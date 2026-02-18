@@ -1,6 +1,6 @@
 ---
 name: fix
-description: Clean unnecessary changes from the current branch with patch preview and confirmation for non-trivial edits
+description: Clean auto-fixable issues found by /check with patch preview and confirmation
 allowed-tools:
   - Bash
   - Read
@@ -8,35 +8,42 @@ allowed-tools:
   - Edit
   - Grep
   - Glob
-  - Task
-argument-hint: "[base-branch]"
 ---
 
 # PR Assisted Clean
 
-Clean unnecessary changes from the current branch to make the PR cleaner and easier to review. Default to safe mode: suggest patch previews first, and require explicit confirmation for any non-trivial edit before applying.
+Clean auto-fixable issues identified by `/clean-pr:check`. This command requires a prior check report in the conversation -- it does not scan independently.
 
 ## Workflow
 
-### 1. Determine Base Branch
+### 1. Require Check Findings
 
-If an argument is provided, use it as the base branch. Otherwise:
+Look for a "PR Cleanliness Report" from `/clean-pr:check` earlier in this conversation. If none exists, tell the user:
 
-1. Try `gh pr view --json baseRefName -q .baseRefName 2>/dev/null`
-2. Fall back to `main` or `master` via `git rev-parse --verify`
-3. If neither works, ask the user
+> No check report found. Run `/clean-pr:check` first to identify issues, then run `/clean-pr:fix` to clean them up.
 
-### 2. Ensure Clean Working Tree
+Then stop.
+
+### 2. Extract Check Context
+
+From the check report, extract:
+
+- **Base branch**: From the `**Branch**: feature/xyz -> main` header line.
+- **Auto-fixable issues**: All items from the Errors and Warnings tables that fall into these categories: debug artifacts, formatting noise, scope creep. Ignore cross-codebase findings (duplicates, reimplemented utilities, pattern divergence) -- those require human judgment.
+
+If there are no auto-fixable issues in the check report, tell the user there is nothing to fix and stop.
+
+### 3. Ensure Clean Working Tree
 
 Run `git status --porcelain`. If there are uncommitted changes, warn the user and ask whether to proceed (changes could be lost) or stop.
 
-### 3. Analyze the Diff
+### 4. Get the Diff
 
-Run `git diff <base>...HEAD` and use the pattern-scanner agent to identify fixable issues.
+Run `git diff <base>...HEAD` to get the actual diff content. This is needed to locate the exact code to edit.
 
-### 4. Build a Cleanup Plan
+### 5. Build a Cleanup Plan
 
-Analyze findings and group proposed edits by category:
+Using the auto-fixable issues from the check report, group proposed edits by category:
 
 - **Debug artifacts**: `console.log()`, `console.debug()`, `debugger`, temporary `print()` / `pprint()`, `binding.pry`, `byebug`, commented-out code blocks
 - **Formatting noise**: whitespace-only changes, import reordering-only, blank-line-only changes
@@ -54,7 +61,7 @@ Treat the following as non-trivial by default:
 - Removing TODO/FIXME comments
 - Reverting drive-by refactors or scope-creep changes
 
-### 5. Propose Patch (Default Behavior)
+### 6. Propose Patch
 
 Before applying edits, present grouped patch previews with file paths, line references, and rationale.
 
@@ -64,7 +71,7 @@ If there are more non-trivial findings than fit in a single question (remember: 
 
 Handle conflicting multiSelect responses: if the user selects "None in this group" alongside specific items, treat it as "None". If the user selects "All in this group" alongside specific items, treat it as "All". If both "All" and "None" are selected, re-prompt.
 
-### 6. Apply Confirmed Edits
+### 7. Apply Confirmed Edits
 
 After confirmation:
 
@@ -78,7 +85,7 @@ After confirmation:
    - The full file patch preview has been shown
    - The user explicitly confirms reverting the entire file
 
-### 7. Commit Cleanup
+### 8. Commit Cleanup
 
 After confirmed fixes are applied:
 
@@ -88,7 +95,7 @@ After confirmed fixes are applied:
 
 If no changes are applied, do not create a commit.
 
-### 8. Summary Report
+### 9. Summary Report
 
 Output a summary:
 

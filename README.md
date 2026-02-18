@@ -47,16 +47,31 @@ You can optionally describe what you want improved (e.g., `/clean-pr:improve "ad
 3. Review the proposed changes and confirm non-trivial edits
 4. Test with `/clean-pr:check` on a branch with known issues
 
+## Usage
+
+Start with `/clean-pr:check`. It analyzes your branch's diff and produces a report with a **Next Steps** section that tells you what to do:
+
+```
+/clean-pr:check              # analyze the current branch
+/clean-pr:check develop      # analyze against a specific base branch
+```
+
+Based on the findings, check will suggest:
+
+- **`/clean-pr:fix`** -- if there are auto-fixable issues (debug artifacts, formatting noise, scope creep). Fix reads the check report from the conversation, so it must be run after check.
+- **`/clean-pr:split`** -- if the PR has mixed concerns or exceeds size thresholds. Produces a decomposition plan (no git changes).
+- **Manual review** -- for cross-codebase findings (duplicates, reimplemented utilities, pattern divergence) that require human judgment.
+
 ## Commands
 
 | Command | Purpose |
 |---------|---------|
-| `/clean-pr:check` | Analyze the current branch's diff and produce a cleanliness report |
-| `/clean-pr:fix` | Auto-remove debug artifacts and formatting noise from the branch |
+| `/clean-pr:check` | Analyze the current branch's diff and produce a cleanliness report with next steps |
+| `/clean-pr:fix` | Clean auto-fixable issues found by check, with patch preview and confirmation |
 | `/clean-pr:split` | Suggest how to decompose a large PR into smaller focused PRs |
 | `/clean-pr:improve` | Analyze and apply improvements to this plugin itself |
 
-The PR commands (`check`, `fix`, `split`) accept an optional `[base-branch]` argument. If omitted, they auto-detect the base branch from the GitHub PR or fall back to `main`/`master`. The `improve` command accepts an optional `[what to improve]` argument instead.
+`check` and `split` accept an optional `[base-branch]` argument. If omitted, they auto-detect the base from the GitHub PR or fall back to `main`/`master`. `fix` gets its base branch from the check report. `improve` accepts an optional `[what to improve]` argument.
 
 ## Plugin structure
 
