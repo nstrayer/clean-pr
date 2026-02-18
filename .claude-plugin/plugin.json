@@ -1,6 +1,6 @@
 {
   "name": "clean-pr",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Analyze and clean up PRs to be minimal, focused, and easy for humans to review",
   "author": {
     "name": "Nick Strayer"
